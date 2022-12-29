@@ -1,0 +1,2 @@
+alias ssh="run connect.js"
+alias nmap="run megaScan.js"

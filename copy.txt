@@ -1,0 +1,1 @@
+scp deployScripts/hack.js home; scp deployScripts/weaken.js home; scp deployScripts/grow.js home
