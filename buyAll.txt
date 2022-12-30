@@ -1,4 +1,4 @@
-connect darkweb; buy BruteSSH.exe;
+buy BruteSSH.exe;
 buy FTPCrack.exe;
 buy relaySMTP.exe;
 buy HTTPWorm.exe;
