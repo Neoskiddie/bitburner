@@ -2,7 +2,7 @@ export async function main(ns) {
 	let scanResult = await scanAll(ns, "home");
 	let shouldSkippRooted = ns.args[0];
 	ns.tprint(scanResult);
-	await hackAll(ns, scanResult, shouldSkippRooted);
+	await hackAll(ns, scanResult, true);
 }
 
 async function hackAll(ns, listOfServers, shouldSkippRooted){

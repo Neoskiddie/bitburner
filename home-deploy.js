@@ -33,7 +33,7 @@ async function runScriptsOnTheHackableServers(
 	targets) {
 
 	let attacker = bots[0];
-	let ram = ns.getServerMaxRam(attacker); // returns array, first argument is total ram
+	let ram = ns.getServerMaxRam(attacker) - 16; // leave some ram for running scripts on home
 
 	const sumOfRatio = 13;
 	const scriptRunningCost = 1.75;

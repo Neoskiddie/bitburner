@@ -1,0 +1,4 @@
+home;connect n00dles;connect CSEC;backdoor
+home;connect sigma-cosmetics;connect max-hardware;connect omega-net;connect avmnite-02h;backdoor
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect I.I.I.I;backdoor
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect infocomm;connect run4theh111z;backdoor
