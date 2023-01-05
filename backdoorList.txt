@@ -1,0 +1,33 @@
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect global-pharm;connect unitalife;connect zeus-med;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect infocomm;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect zb-def;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect zb-def;connect titan-labs;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect zb-def;connect microdyne;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect syscore;connect millenium-fitness;connect snap-fitness;connect deltaone;connect solaris;connect nova-med;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect I.I.I.I;connect rho-construction;connect aerocorp;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect computek;connect I.I.I.I;connect rho-construction;connect aerocorp;connect omnia;backdoor
+
+home;connect joesguns;connect zer0;connect silver-helix;connect crush-fitness;backdoor
+
+home;connect joesguns;connect zer0;connect phantasy;backdoor
+
+home;connect joesguns;connect zer0;connect phantasy;connect the-hub;backdoor
+
+home;connect joesguns;connect zer0;connect phantasy;connect the-hub;connect zb-institute;backdoor
+
+home;connect joesguns;connect zer0;connect phantasy;connect the-hub;connect summit-uni;backdoor
+
+home;connect hong-fang-tea;backdoor
+
+home;connect harakiri-sushi;backdoor
+
+home;connect iron-gym;backdoor
