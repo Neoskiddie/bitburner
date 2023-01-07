@@ -1,7 +1,10 @@
+// This is an early game script that uses the hacked servers to hack each other for money.
+// It tries to use 1:2:10 ratio for hack, weaken and grow respectively.
+// On each server hack, grow and weaken scripts are coppied according to ratio and run in a infinite loop.
 /** @param {NS} ns */
 export async function main(ns) {
 	let allServers = scanAll(ns, "home");
-	let botnet = getBotnet(ns, allServers);
+	let botnet = getBotnet(ns, allServers).filter(name => !name.includes("bot")); // purchased servers have separate script, so don't use them here 
 	let hackable = getHackable(ns, allServers);
 	//ns.tprint(botnet);
 	//ns.tprint(hackable);
@@ -18,7 +21,7 @@ export async function main(ns) {
 	scripts.push(localDirectory + weakenScript);
 
 	cleanAllHosts(ns, deployDirectory, botnet); // Delete old scripts everywhere (and kill them)
-	createScripts(ns);
+	await createScripts(ns);
 	//deploy(ns, scripts, botnet);
 	await runScriptsOnTheHackableServers(ns, deployDirectory, localDirectory, hackScript, growScript, weakenScript, botnet, hackable);
 
@@ -96,7 +99,7 @@ async function copyAndRunXTimes(ns, deployDirectory, locaDirectory, scriptName, 
 		// can't deploy to home this way :(
 		// There doesn't seem to be a way to copy on the same host
 		// Only mv and scp, so can't run multiple scripts on the same machine it looks like
-		if (attacker === "home" || attacker === "first") { 
+		if (attacker === "home" || attacker === "first" || attacker.includes("bot")) { 
 			return;
 		} 
 
@@ -207,8 +210,8 @@ function scanRec(ns, inputServer, isFirstCall) {
 	return list;
 }
 
-function createScripts(ns) {
-		ns.write("/deployScripts/hack.js", 
+async function createScripts(ns) {
+	await ns.write("/deployScripts/hack.js", 
 `/** @param {NS} ns */
 export async function main(ns) {
 	while(true) {
@@ -216,7 +219,7 @@ export async function main(ns) {
 	}
 }`, "w");
 
-	ns.write("/deployScripts/grow.js", 
+	await ns.write("/deployScripts/grow.js", 
 `/** @param {NS} ns */
 export async function main(ns) {
 	while(true) {
@@ -224,7 +227,7 @@ export async function main(ns) {
 	}
 }`, "w");
 
-	ns.write("/deployScripts/weaken.js", 
+	await ns.write("/deployScripts/weaken.js", 
 `/** @param {NS} ns */
 export async function main(ns) {
 	while(true) {
