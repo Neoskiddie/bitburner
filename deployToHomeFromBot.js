@@ -1,3 +1,8 @@
+// The script is complementary to the home-deploy.js. 
+// It buys a server with specified name and automatically runs the 
+// home-deploy.js server from there
+// It can be rerun to deploy again, but the scripts on home must be killed manually
+// with the `killall` command. This is because this script is run from other script too.
 /** @param {NS} ns */
 export async function main(ns) {
 	ns.tprintf("You should manually run 'killall' before funning this script!")
