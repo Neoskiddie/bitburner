@@ -1,8 +1,19 @@
+// Script for running hack, grow and weaken on home
+// It should be run from any other server, not from home.
+// This is because there is no command to copy files directly.
+// Instead scp and mv are used to copy and rename files on the remote host.
 /** @param {NS} ns */
 export async function main(ns) {
+	if (ns.args.length != 1) {
+		ns.tprintf("Please specify number of threads to run with on the bots (purchased servers)\n");
+		ns.tprintf("If you have maxed RAM on the servers try 256 (late game), otherwise game might crash\n");
+		return;
+	}
+	const threads = ns.args[0];
+
 	let allServers = scanAll(ns, "home");
 	let botnet = ["home"];
-	let hackable = getHackable(ns, allServers);
+	let hackable = getHackable(ns, allServers).filter(name => !name.includes("bot"));
 	//ns.tprint(botnet);
 	//ns.tprint(hackable);
 
@@ -12,13 +23,12 @@ export async function main(ns) {
 	const deployDirectory = "/running/"
 	const localDirectory = "/deployScripts/"
 
-	let scripts = [];
-	scripts.push(localDirectory + hackScript);
-	scripts.push(localDirectory + growScript);
-	scripts.push(localDirectory + weakenScript);
 
+	rmFolder(ns, deployDirectory, "home")
+	rmFolder(ns, localDirectory, "home")
+	await createScripts(ns);
 	//cleanAllHosts(ns, deployDirectory, botnet); // Delete old scripts everywhere (and kill them)
-	await runScriptsOnTheHackableServers(ns, deployDirectory, localDirectory, hackScript, growScript, weakenScript, botnet, hackable);
+	await runScriptsOnTheHackableServers(ns, deployDirectory, localDirectory, hackScript, growScript, weakenScript, hackable, threads);
 
 }
 
@@ -29,14 +39,14 @@ async function runScriptsOnTheHackableServers(
 	hackScript,
 	growScript,
 	weakenScript,
-	bots,
-	targets) {
+	targets,
+	threads) {
 
-	let attacker = bots[0];
+	let attacker = "home";
 	let ram = ns.getServerMaxRam(attacker) - 16; // leave some ram for running scripts on home
 
 	const sumOfRatio = 13;
-	const scriptRunningCost = 1.75;
+	const scriptRunningCost = 1.75 * threads;
 	const numberOfTimesScriptCanBeRun = Math.floor(ram / scriptRunningCost);
 	const maxRunningPerTarget = Math.floor(numberOfTimesScriptCanBeRun / targets.length);
 	const valueOfOneShare = maxRunningPerTarget / sumOfRatio
@@ -50,26 +60,26 @@ async function runScriptsOnTheHackableServers(
 
 		// for home just run the ratio for each server
 		//ns.tprint("Running attack against " + target);
-		await copyAndRunXTimes(ns, deployDirectory, localDirectory, hackScript, attacker, target, hackRatio);
-		await copyAndRunXTimes(ns, deployDirectory, localDirectory, weakenScript, attacker, target, weakenRatio);
-		await copyAndRunXTimes(ns, deployDirectory, localDirectory, growScript, attacker, target, growRatio);
+		await copyAndRunXTimes(ns, deployDirectory, localDirectory, hackScript, attacker, target, hackRatio, threads);
+		await copyAndRunXTimes(ns, deployDirectory, localDirectory, weakenScript, attacker, target, weakenRatio, threads);
+		await copyAndRunXTimes(ns, deployDirectory, localDirectory, growScript, attacker, target, growRatio, threads);
 	}
 }
 
 // copy script that already is on the attacker and run it X times with
 // target as first argument
-async function copyAndRunXTimes(ns, deployDirectory, locaDirectory, scriptName, attacker, target, numberOfTimesToRun) {
+async function copyAndRunXTimes(ns, deployDirectory, localDirectory, scriptName, attacker, target, numberOfTimesToRun, threads) {
 	// can't deploy to home this way :(
 	// There doesn't seem to be a way to copy on the same host
 	// Only mv and scp, so can't run multiple scripts on the same machine it looks like
 
 	for (let x = 0; x < numberOfTimesToRun; x++) {
 		await ns.sleep(0.001); // Add a 1s sleep to prevent freezing
-		let localPath = locaDirectory + scriptName;
+		let localPath = localDirectory + scriptName;
 		let newName = deployDirectory + scriptName.replace(/\.[^/.]+$/, "") + "-" + target + "-" + x + ".js";
 		await ns.scp(localPath, attacker); // there is no ns.cp, so must scp each time then mv
 		ns.mv(attacker, localPath, newName);
-		ns.exec(newName, attacker, 1, target);
+		ns.exec(newName, attacker, threads, target);
 	}
 }
 
@@ -128,6 +138,15 @@ function getHackable(ns, listOfServers) {
 		i !== 'darkweb'); // filter out my servers and darkweb (cannot be hacked?)
 }
 
+// fuciton that deletes folder
+// it actually just greps the string so be careful!
+function rmFolder(ns, folderToClear, server) {
+	let listOfScripts =  ns.ls(server, folderToClear);
+	for (let x = 0; x < listOfScripts.length; x++) {
+		ns.rm(listOfScripts[x], server);
+	}
+}
+
 // -------------------------------------------------------------------------------- 
 // SCAN
 // -------------------------------------------------------------------------------- 
@@ -159,4 +178,32 @@ function scanRec(ns, inputServer, isFirstCall) {
 
 
 	return list;
+}
+// --------------------------------------------------------------------------------
+
+async function createScripts(ns) {
+	await ns.write("/deployScripts/hack.js", 
+`/** @param {NS} ns */
+export async function main(ns) {
+	while(true) {
+		await ns.hack(ns.args[0]);
+	}
+}`, "w");
+
+	await ns.write("/deployScripts/grow.js", 
+`/** @param {NS} ns */
+export async function main(ns) {
+	while(true) {
+		await ns.grow(ns.args[0]);
+	}
+}`, "w");
+
+	await ns.write("/deployScripts/weaken.js", 
+`/** @param {NS} ns */
+export async function main(ns) {
+	while(true) {
+		await ns.weaken(ns.args[0]);
+	}
+}`, "w");
+
 }
