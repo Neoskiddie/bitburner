@@ -1,5 +1,5 @@
 export async function main(ns) {
-	let allServers = scanAll(ns, "home");
+	let allServers = scanAll(ns, "home").filter(name => !name.includes("home") && !name.includes("bot"));
 
 	for (let x = 0; x < allServers.length; x++) {
 		let level = ns.getServerRequiredHackingLevel(allServers[x]);
