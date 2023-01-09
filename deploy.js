@@ -4,8 +4,16 @@
 /** @param {NS} ns */
 export async function main(ns) {
 	let allServers = scanAll(ns, "home");
-	let botnet = getBotnet(ns, allServers).filter(name => !name.includes("bot")); // purchased servers have separate script, so don't use them here 
-	let hackable = getHackable(ns, allServers);
+	let botnet = []
+	if (ns.args.length == 1 && ns.args[0]) {
+		//botnet = getBotnet(ns, allServers).filter(name => !name.includes("bot")); // purchased servers have separate script, so don't use them here 
+	} else {
+		ns.tprintf("You can specify if the script should skip bots by adding `true` as a flag")
+		botnet = getBotnet(ns, allServers);
+	}
+
+	botnet = getBotnet(ns, allServers);
+	let hackable = getHackable(ns, allServers).filter(name => !name.includes("bot"));
 	//ns.tprint(botnet);
 	//ns.tprint(hackable);
 
@@ -99,7 +107,7 @@ async function copyAndRunXTimes(ns, deployDirectory, locaDirectory, scriptName, 
 		// can't deploy to home this way :(
 		// There doesn't seem to be a way to copy on the same host
 		// Only mv and scp, so can't run multiple scripts on the same machine it looks like
-		if (attacker === "home" || attacker === "first" || attacker.includes("bot")) { 
+		if (attacker === "home" || attacker === "first") { 
 			return;
 		} 
 

@@ -1,15 +1,11 @@
-// Script used to buy bots.
-// It tries to buy max number of bots and ram with
-// all the money that player has at the time.
-// Looks like 150m is when it starts to make sense to buy servers.
 /** @param {NS} ns */
 export async function main(ns) {
 	//let maxRam = ns.getPurchasedServerMaxRam();
 	//let cost = ns.getPurchasedServerCost(maxRam);
 
 	let allServers = scanAll(ns, "home");
-	let bots = allServers.filter(name => name.includes("bot"));
-	const maxNumberOfServers = 25;
+	//let bots = allServers.filter(name => name.includes("bot"));
+	const maxNumberOfServers = ns.getPurchasedServerLimit();
 
 	let myMoney = ns.getServerMoneyAvailable("home");
 	if (myMoney < 150000000) {
@@ -17,7 +13,8 @@ export async function main(ns) {
 		return;
 	}
 	const pricePerGBOfRam = 55000;
-	const numberOfServersToBuy = maxNumberOfServers - bots.length;
+	//const numberOfServersToBuy = maxNumberOfServers - bots.length;
+	const numberOfServersToBuy = maxNumberOfServers;
 	let maxGBOfRam = myMoney / pricePerGBOfRam;
 	let ramPerServer = nearestPowerOfTwo(maxGBOfRam / numberOfServersToBuy);
 
@@ -26,9 +23,15 @@ export async function main(ns) {
 	// Buy max out servers. 
 	// It finds out how many were already bought and buys more until the limit
 	// It assumes all bots are named bot0, bot1 etc
-	for (let x = bots.length; x < maxNumberOfServers; x++) {
+	//for (let x = bots.length; x < maxNumberOfServers; x++) {
+	for (let x = 0; x < maxNumberOfServers; x++) {
 		//ns.purchaseServer("bot" + x, maxRam);
-		ns.purchaseServer("bot" + x, ramPerServer);
+		const botName = "bot" + x;
+		if (ns.serverExists(botName) && ns.getServerMaxRam(botName) < ramPerServer) {
+			ns.upgradePurchasedServer(botName, ramPerServer);
+		} else {
+			ns.purchaseServer(botName, ramPerServer);
+		}
 	}
 }
 

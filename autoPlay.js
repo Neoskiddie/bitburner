@@ -21,12 +21,16 @@ export async function main(ns) {
 		const hackingLevel = ns.getHackingLevel();
 		await execAsync(ns, hackScript, homeServer, 1);// execute the script on home with one thread;
 		await execAsync(ns, killAllScript, homeServer, 1);
-		await execAsync(ns, deployToRegularServersScript, homeServer, 1);
 
 		// kill all scripts running on home and deploy to it from a remote server 
 		// that is bought automatically, last parameter is name of the server
 		ns.killall(homeServer, true);
-		await execAsync(ns, botDeploy, homeServer, 1, 1);
+		if (ns.getServerMaxRam("bot0") > 1000) {
+			await execAsync(ns, deployToRegularServersScript, homeServer, 1, true);
+			await execAsync(ns, botDeploy, homeServer, 1, 1);
+		} else {
+			await execAsync(ns, deployToRegularServersScript, homeServer, 1);
+		}
 		await execAsync(ns, homeDeploy, homeServer, 1, "first", 1);
 
 
